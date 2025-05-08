@@ -1,37 +1,37 @@
-import json
-import uuid
+# user_feedback.py
+from supabase import create_client, Client
+from pydantic import BaseModel
 from datetime import datetime
 
-def record_user_feedback(user_id, scene_text, selected_index, response_list):
-    feedback_id = str(uuid.uuid4())
-    selected = response_list[selected_index - 1]
-    record = {
-        "feedback_id": feedback_id,
-        "user_id": user_id,
-        "scene": scene_text,
-        "selected_text": selected.get("text"),
-        "style": selected.get("style", "温柔风"),
-        "score": selected.get("score", 5),
-        "reason": selected.get("reason", ""),
-        "selected_at": datetime.utcnow().isoformat()
-    }
-    # 可写入数据库 / 本地保存
-    with open("user_feedback.jsonl", "a", encoding="utf-8") as f:
-        f.write(json.dumps(record, ensure_ascii=False) + "\n")
-    return record
+# Supabase configuration
+url = "https://xyzcompany.supabase.co"
+key = "your-anon-key"
+supabase: Client = create_client(url, key)
 
+class FeedbackModel(BaseModel):
+    user_id: str
+    scene: str
+    selected_text: str
+    style: str
+    score: int
+    reason: str
+    selected_at: datetime
 
-# 示例交互
+# Function to save feedback
+def save_feedback(feedback: FeedbackModel):
+    response = supabase.table("user_feedback").insert(feedback.dict()).execute()
+    return response.data
+
 if __name__ == "__main__":
-    sample_user = "user_001"
-    scene = "你能不能别烦我？"
-    response_list = [
-        {"text": "好啦我闭嘴啦~", "reason": "幽默弱化冲突", "score": 5, "style": "温柔风"},
-        {"text": "不烦你了，我溜咯…", "reason": "表达尊重", "score": 4.5, "style": "温柔风"},
-        {"text": "我是不是太黏你了？", "reason": "自我反省", "score": 4, "style": "温柔风"}
-    ]
-
-    # 模拟选择第2条
-    feedback = record_user_feedback(sample_user, scene, 2, response_list)
-    print("✅ 已记录用户反馈：")
-    print(json.dumps(feedback, indent=2, ensure_ascii=False))
+    # Example usage
+    feedback = FeedbackModel(
+        user_id="user_001",
+        scene="你能不能别烦我？",
+        selected_text="我闭嘴不打扰你啦",
+        style="温柔风",
+        score=5,
+        reason="共情中退让",
+        selected_at=datetime.utcnow()
+    )
+    save_feedback(feedback)
+    print("Feedback saved successfully!")
