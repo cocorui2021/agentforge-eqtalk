@@ -1,4 +1,3 @@
-
 import React from "react";
 
 const STYLE_OPTIONS = [
@@ -10,16 +9,16 @@ const STYLE_OPTIONS = [
 ];
 
 const StyleSelector = ({ selectedStyle, onChange }) => (
-  <div className="mb-4">
-    <label className="block text-sm font-medium mb-1">🎭 选择回应风格</label>
+  <div>
+    <label className="block text-sm font-medium text-gray-600 mb-1">🎭 选择回应风格</label>
     <div className="flex flex-wrap gap-2">
       {STYLE_OPTIONS.map((opt) => (
         <button
           key={opt.value}
           onClick={() => onChange(opt.value)}
-          className={`px-3 py-1 rounded-full border text-sm transition ${
+          className={`px-3 py-1 rounded-full border text-sm transition font-medium ${
             selectedStyle === opt.value
-              ? "bg-primary text-white border-primary"
+              ? "bg-indigo-600 text-white border-indigo-600"
               : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
           }`}
         >
