@@ -1,42 +1,31 @@
-
 import React, { useState } from "react";
 
-const ChatContextUploader = ({ onSubmit }) => {
-  const [text, setText] = useState("");
-  const [imagePreview, setImagePreview] = useState(null);
+const ChatContextUploader = ({ defaultText, onSubmit }) => {
+  const [inputText, setInputText] = useState(defaultText);
 
-  const handleTextSubmit = () => {
-    if (text.trim()) {
-      onSubmit({ type: "text", content: text });
-      setText("");
-    }
+  const handleChange = (e) => {
+    setInputText(e.target.value);
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImagePreview(URL.createObjectURL(file));
-      onSubmit({ type: "image", content: file });
-    }
+  const handleSubmit = () => {
+    onSubmit({ type: "text", content: inputText });
   };
 
   return (
-    <div className="border p-4 bg-white rounded-md mb-4">
+    <div className="mb-4">
       <textarea
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        placeholder="粘贴聊天文本..."
-        className="w-full p-2 h-24 border rounded mb-2"
-      />
-      <button onClick={handleTextSubmit} className="bg-primary text-white py-2 px-4 rounded">
-        使用文本生成建议
+        className="w-full p-3 border rounded-lg"
+        rows={4}
+        value={inputText}
+        onChange={handleChange}
+        placeholder="请输入对话内容..."
+      ></textarea>
+      <button
+        onClick={handleSubmit}
+        className="mt-2 px-4 py-2 bg-blue-600 text-white rounded"
+      >
+        提交对话
       </button>
-      <div className="mt-3">
-        <input type="file" accept="image/*" onChange={handleImageChange} />
-        {imagePreview && (
-          <img src={imagePreview} alt="预览" className="w-full mt-2 rounded border max-h-60 object-contain" />
-        )}
-      </div>
     </div>
   );
 };
