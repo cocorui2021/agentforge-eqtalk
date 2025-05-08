@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import EQTalkPage from "./components/EQTalkPage";
 import StyleSelector from "./components/StyleSelector";
 import ChatContextUploader from "./components/ChatContextUploader";
+import DemoDialog from "./components/DemoDialog";
 
 const App = () => {
   const [style, setStyle] = useState("温柔风");
   const [chatInput, setChatInput] = useState("");
+  const [showDemoDialog, setShowDemoDialog] = useState(true);
 
   useEffect(() => {
     const savedStyle = localStorage.getItem("eqtalk-style");
@@ -22,6 +24,11 @@ const App = () => {
     localStorage.setItem("eqtalk-chat", chatInput);
   }, [chatInput]);
 
+  const handleUseDemo = (demoText: string) => {
+    setChatInput(demoText);
+    setShowDemoDialog(false);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-100 p-6">
       <div className="max-w-2xl mx-auto bg-white shadow-lg rounded-xl p-6 space-y-4">
@@ -37,6 +44,8 @@ const App = () => {
         />
         <EQTalkPage style={style} scene={chatInput} />
       </div>
+
+      {showDemoDialog && <DemoDialog onUseDemo={handleUseDemo} />}
     </div>
   );
 };
