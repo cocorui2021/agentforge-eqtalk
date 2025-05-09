@@ -1,62 +1,41 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-const TagCloudWithRanking = ({ tags }) => {
-  const [votes, setVotes] = useState({});
-
-  const handleVote = (tag) => {
-    setVotes((prev) => ({
-      ...prev,
-      [tag]: (prev[tag] || 0) + 1
-    }));
-    fetch("/api/feedback-tag-vote", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ tag_name: tag })
-    });
-  };
-
-  const sortedTags = Object.keys(votes).sort((a, b) => votes[b] - votes[a]);
+const TagCloudWithRanking = () => {
+  const [tags, setTags] = useState([
+    { tag: "共情", count: 32 },
+    { tag: "主动道歉", count: 25 },
+    { tag: "直接表达", count: 18 },
+    { tag: "调侃", count: 15 },
+    { tag: "保持冷静", count: 12 }
+  ]);
 
   return (
-    <div className="flex gap-8 p-4">
-      {/* 标签云 */}
-      <div className="flex-1 flex flex-wrap gap-4 justify-center">
-        {tags.map((tag, idx) => {
-          const voteCount = votes[tag.name] || 0;
-          const scale = 1 + voteCount * 0.1;
-          return (
-            <button
-              key={idx}
-              onClick={() => handleVote(tag.name)}
-              style={{
-                transform: `scale(${scale})`,
-                transition: "transform 0.3s ease",
-                background: tag.hot ? "linear-gradient(to right, #f9d423, #ff4e50)" : "#f0f4f8",
-                color: tag.hot ? "#fff" : "#333"
-              }}
-              className="px-4 py-2 rounded-full shadow hover:scale-110 transition text-sm relative"
-            >
-              {tag.name}
-              <span className="absolute top-0 right-0 text-xs text-gray-500">
-                ❤️ {voteCount}
-              </span>
-            </button>
-          );
-        })}
+    <div style={{ textAlign: "center" }}>
+      <div>
+        {tags.map((item) => (
+          <span
+            key={item.tag}
+            style={{
+              fontSize: `${14 + item.count / 2}px`,
+              margin: "10px",
+              cursor: "pointer",
+              color: "#555"
+            }}
+          >
+            {item.tag} ({item.count})
+          </span>
+        ))}
       </div>
-
-      {/* 投票排行榜 */}
-      <div className="w-60 bg-white p-4 rounded-lg shadow">
-        <h3 className="text-lg font-semibold text-gray-800 mb-3">🔥 热门表达排行</h3>
-        <ul className="space-y-2">
-          {sortedTags.slice(0, 5).map((tag, idx) => (
-            <li key={idx} className="flex justify-between text-gray-700">
-              <span>{idx + 1}. {tag}</span>
-              <span>❤️ {votes[tag]}</span>
+      <h4 style={{ marginTop: "20px" }}>🏆 热门标签排行</h4>
+      <ol style={{ textAlign: "left", display: "inline-block" }}>
+        {tags
+          .sort((a, b) => b.count - a.count)
+          .map((item, index) => (
+            <li key={index}>
+              {item.tag} - {item.count}票
             </li>
           ))}
-        </ul>
-      </div>
+      </ol>
     </div>
   );
 };
