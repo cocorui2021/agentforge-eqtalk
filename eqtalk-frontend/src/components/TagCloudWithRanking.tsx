@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 
 const TagCloudWithRanking = () => {
@@ -16,7 +17,7 @@ const TagCloudWithRanking = () => {
           <span
             key={item.tag}
             className="cursor-pointer text-gray-700 hover:text-indigo-500"
-            style={{ fontSize: `${14 + item.count / 2}px` }}
+            style={{ fontSize: \`\${14 + item.count / 2}px\` }}
           >
             {item.tag} ({item.count})
           </span>
