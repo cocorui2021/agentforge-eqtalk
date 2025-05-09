@@ -1,34 +1,25 @@
-def format_responses(response_list):
-    output = []
-    for idx, item in enumerate(response_list, 1):
-        sentence = item.get("text", "")
-        reason = item.get("reason", "")
-        score = item.get("score", 5)
-        stars = "⭐️" * int(round(score))
-        output.append(f"{idx}. {sentence}   [{stars}]")
-        output.append(f"   ⮩ 理由：{reason}\n")
-    return "\n".join(output)
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from typing import List
 
+app = FastAPI()
 
-# 示例数据
-if __name__ == "__main__":
-    example_responses = [
-        {
-            "text": "好啦我闭嘴啦~",
-            "reason": "用幽默弱化冲突，亲昵口吻缓和关系",
-            "score": 5
-        },
-        {
-            "text": "不烦你了，我溜咯…",
-            "reason": "退一步表达尊重，营造轻松氛围",
-            "score": 4.5
-        },
-        {
-            "text": "我是不是太黏你了？",
-            "reason": "自我反省姿态，易引发对方共鸣",
-            "score": 4
-        }
-    ]
+class ResponseModel(BaseModel):
+    text: str
+    style: str
+    score: int
+    reason: str
 
-    print("🧠 AI为你推荐3条回应：\n")
-    print(format_responses(example_responses))
+@app.get("/api/display-replies")
+async def get_replies() -> List[ResponseModel]:
+    try:
+        # 模拟从数据库获取风格化回复
+        replies = [
+            {"text": "你说的对，我们可以尝试更好地沟通。", "style": "温柔风", "score": 5, "reason": "共情"},
+            {"text": "哦，可能我太忙了，没注意到你的需求", "style": "幽默风", "score": 4, "reason": "幽默"},
+            {"text": "我理解，下一次我们可以避免这些误会", "style": "冷静风", "score": 5, "reason": "冷静分析"},
+            {"text": "没错，我们可以改进沟通方式", "style": "直接风", "score": 4, "reason": "直率"}
+        ]
+        return replies
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
