@@ -1,19 +1,26 @@
 @app.post("/api/gpt-reply")
 async def generate_replies(request: RequestModel):
     try:
-        prompt = f"""
-你是一个高情商对话助手，请基于以下用户对话场景：
+        base_system = {
+            "role": "system",
+            "content": "你是一位精通沟通技巧与情绪调节的对话专家，请根据用户提供的对话上下文，生成合适的情绪化回复建议，帮助用户达成更好的沟通效果。"
+        }
+
+        user_prompt = f"""
+这是当前对话场景：
 {request.scene}
-生成 {request.max_suggestions} 条回复，每条应符合不同的情感语气（如温柔、幽默、冷静、直接等），并为每条回复赋予：
-- 推荐等级（1-5分）
-- 推荐理由（简短）
-请用 JSON 格式返回列表，例如：
-[{{"text": "xxx", "score": 5, "reason": "语气柔和，能有效共情"}}]
+
+请基于以上上下文，生成不超过4条回复建议，每条带上：
+- 回复文本
+- 推荐分数（1~5）
+- 推荐理由（情绪适配性、共情度、风格清晰度等）
+JSON格式输出即可：
+[{{"text": "...", "score": 5, "reason": "..."}}]
         """.strip()
 
         completion = openai.ChatCompletion.create(
             deployment_id="gpt-4.1",
-            messages=[{"role": "user", "content": prompt}],
+            messages=[base_system, {"role": "user", "content": user_prompt}],
             temperature=0.7
         )
 
