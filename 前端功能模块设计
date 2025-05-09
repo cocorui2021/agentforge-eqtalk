@@ -1,0 +1,116 @@
+1️⃣ Agent Task Manager 页面（AgentTaskManager.tsx）
+tsx
+复制
+编辑
+import React, { useState, useEffect } from "react";
+
+const AgentTaskManager = () => {
+  const [tasks, setTasks] = useState([]);
+  const [role, setRole] = useState("需求分析官");
+  const [prompt, setPrompt] = useState("");
+  const [priority, setPriority] = useState("中");
+
+  const fetchTasks = async () => {
+    const res = await fetch("/api/agent/list");
+    const data = await res.json();
+    setTasks(data.tasks);
+  };
+
+  const handleAssign = async () => {
+    await fetch("/api/agent/assign", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ agent_role: role, prompt, priority }),
+    });
+    setPrompt("");
+    fetchTasks();
+  };
+
+  useEffect(() => {
+    fetchTasks();
+  }, []);
+
+  return (
+    <div className="p-6 max-w-3xl mx-auto">
+      <h2 className="text-2xl font-bold mb-4">📚 Agent 专家任务调度</h2>
+
+      <div className="mb-6 space-y-2">
+        <input
+          type="text"
+          placeholder="请输入任务 Prompt..."
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+          className="w-full p-2 border rounded"
+        />
+        <div>
+          <select
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            className="p-2 border rounded mr-2"
+          >
+            {["需求分析官", "架构优化官", "代码审查官", "测试专家", "反馈学习官", "迭代监督官"].map((r) => (
+              <option key={r} value={r}>
+                {r}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={priority}
+            onChange={(e) => setPriority(e.target.value)}
+            className="p-2 border rounded"
+          >
+            {["高", "中", "低"].map((p) => (
+              <option key={p} value={p}>
+                {p} 优先级
+              </option>
+            ))}
+          </select>
+        </div>
+        <button onClick={handleAssign} className="mt-2 px-4 py-2 bg-blue-500 text-white rounded">
+          🚀 提交任务
+        </button>
+      </div>
+
+      <h3 className="text-xl font-bold mt-8 mb-4">📋 当前任务列表</h3>
+      <ul className="space-y-3">
+        {tasks.map((task) => (
+          <li
+            key={task.task_id}
+            className="p-4 border rounded shadow bg-gray-50"
+          >
+            <div>🗂️ <strong>角色：</strong>{task.agent_role}</div>
+            <div>📌 <strong>Prompt：</strong>{task.prompt}</div>
+            <div>⚡ <strong>优先级：</strong>{task.priority}</div>
+            <div>📅 <strong>状态：</strong>{task.status}</div>
+            <div>🕒 <strong>分配时间：</strong>{task.assigned_at}</div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export default AgentTaskManager;
+2️⃣ App.tsx 中增加路由切换
+如果你使用 React Router，可以这样引入：
+
+tsx
+复制
+编辑
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import EQTalkPage from "./components/EQTalkPage";
+import AgentTaskManager from "./components/AgentTaskManager";
+
+const App = () => {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<EQTalkPage />} />
+        <Route path="/agent" element={<AgentTaskManager />} />
+      </Routes>
+    </Router>
+  );
+};
+
+export default App;
