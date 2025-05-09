@@ -1,9 +1,8 @@
+
 import React, { useState, useEffect } from "react";
 import EQTalkPage from "./components/EQTalkPage";
 import StyleSelector from "./components/StyleSelector";
 import ChatContextUploader from "./components/ChatContextUploader";
-import DemoDialog from "./components/DemoDialog";
-import ContextImageUploader from "./components/ContextImageUploader";
 import TagCloudWithRanking from "./components/TagCloudWithRanking";
 
 const App = () => {
@@ -46,8 +45,6 @@ const App = () => {
         />
         <EQTalkPage style={style} scene={chatInput} />
       </div>
-
-      {showDemoDialog && <DemoDialog onUseDemo={handleUseDemo} />}
     </div>
   );
 };
