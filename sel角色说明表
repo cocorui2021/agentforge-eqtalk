@@ -1,0 +1,95 @@
+📦 一、Supabase 数据库建表 SQL
+1️⃣ 专家任务调度表（agent_tasks）
+sql
+复制
+编辑
+CREATE TABLE agent_tasks (
+    task_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    agent_role TEXT NOT NULL,
+    prompt TEXT NOT NULL,
+    priority TEXT DEFAULT '中',
+    assigned_at TIMESTAMP DEFAULT timezone('utc', now()),
+    status TEXT DEFAULT '待处理',
+    result TEXT,
+    completed_at TIMESTAMP
+);
+2️⃣ 用户反馈评分表（feedback_scores）
+sql
+复制
+编辑
+CREATE TABLE feedback_scores (
+    feedback_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id TEXT NOT NULL,
+    scene TEXT,
+    selected_text TEXT,
+    style TEXT,
+    score INT CHECK (score BETWEEN 1 AND 5),
+    reason TEXT,
+    selected_at TIMESTAMP DEFAULT timezone('utc', now())
+);
+📚 二、FastAPI API 接口实现
+📄 backend/agent_task_api.py
+python
+复制
+编辑
+from fastapi import APIRouter
+from pydantic import BaseModel
+from supabase import create_client
+import os
+from dotenv import load_dotenv
+import uuid
+from datetime import datetime
+
+load_dotenv()
+
+supabase_url = os.getenv("SUPABASE_URL")
+supabase_key = os.getenv("SUPABASE_KEY")
+
+supabase = create_client(supabase_url, supabase_key)
+router = APIRouter()
+
+class TaskModel(BaseModel):
+    agent_role: str
+    prompt: str
+    priority: str = "中"
+
+@router.post("/assign")
+async def assign_task(task: TaskModel):
+    data = task.dict()
+    data["task_id"] = str(uuid.uuid4())
+    data["assigned_at"] = datetime.utcnow().isoformat()
+    data["status"] = "待处理"
+    response = supabase.table("agent_tasks").insert(data).execute()
+    return {"status": "success", "data": response.data}
+
+@router.get("/list")
+async def get_all_tasks():
+    response = supabase.table("agent_tasks").select("*").execute()
+    return {"tasks": response.data}
+📄 main.py 注册 API 路由
+python
+复制
+编辑
+from agent_task_api import router as agent_task_router
+
+app.include_router(agent_task_router, prefix="/api/agent", tags=["Agent Tasks"])
+📅 三、示范 API 调用
+bash
+复制
+编辑
+curl -X POST "http://localhost:8000/api/agent/assign" \
+-H "accept: application/json" \
+-H "Content-Type: application/json" \
+-d '{
+  "agent_role": "需求分析官",
+  "prompt": "用户希望开发一个高情商聊天助手APP，具备智能推荐和用户成长功能。",
+  "priority": "高"
+}'
+📢 最终目标：
+
+实现任务自动分配与记录。
+
+可以在前端管理界面直接查看任务分配状态和结果（Agent Dashboard）。
+
+所有历史任务、反馈、评分都可追踪。
+
