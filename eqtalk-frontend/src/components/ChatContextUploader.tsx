@@ -1,28 +1,31 @@
+import React, { useState } from "react";
+
 const ChatContextUploader = ({ defaultText, onSubmit }) => {
-  const [textInput, setTextInput] = useState(defaultText || "");
+  const [input, setInput] = useState(defaultText || "");
 
   const handleSubmit = () => {
-    if (textInput.trim()) {
-      onSubmit({ type: "text", content: textInput.trim() });
+    if (input.trim() !== "") {
+      onSubmit({ type: "text", content: input });
     }
   };
 
   return (
-    <div className="mt-4">
-      <label className="block text-sm font-medium text-gray-700 mb-1">📜 输入对话上下文（支持粘贴 5 轮以上）</label>
+    <div className="space-y-2">
       <textarea
-        rows={6}
-        value={textInput}
-        onChange={(e) => setTextInput(e.target.value)}
-        placeholder={`A：你为什么今天又没回消息？\nB：我不是有意的…\nA：你总是这样。`}
-        className="w-full border rounded-lg p-2 text-sm font-mono resize-y"
+        className="w-full p-2 border rounded-lg"
+        rows={3}
+        placeholder="请输入聊天场景..."
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
       />
       <button
         onClick={handleSubmit}
-        className="mt-2 bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
+        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
       >
-        ✨ 提交对话上下文
+        📤 提交场景
       </button>
     </div>
   );
 };
+
+export default ChatContextUploader;
