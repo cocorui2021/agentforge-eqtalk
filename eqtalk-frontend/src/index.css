@@ -1,4 +1,76 @@
+/* 全局基础样式 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f7fb;
+  color: #333;
+  padding: 20px;
+}
+
+h1 {
+  font-size: 2rem;
+  color: #2b2b2b;
+}
+
+input, textarea, button {
+  font-size: 1rem;
+}
+
+textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+.generate-btn {
+  display: inline-block;
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.generated-replies {
+  margin-top: 20px;
+}
+
+.reply-card {
+  background-color: white;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.reply-meta {
+  font-size: 12px;
+  color: #555;
+}
+
+.score {
+  color: #FFD700;
+}
+
+.reason {
+  color: #888;
+}
