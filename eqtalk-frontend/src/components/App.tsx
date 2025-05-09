@@ -4,9 +4,7 @@ import StyleSelector from "./components/StyleSelector";
 import ChatContextUploader from "./components/ChatContextUploader";
 import DemoDialog from "./components/DemoDialog";
 import ContextImageUploader from "./components/ContextImageUploader";
-
-// 添加到页面布局中
-<ContextImageUploader onTextExtracted={(text) => setChatInput(text)} />
+import TagCloudWithRanking from "./components/TagCloudWithRanking";
 
 const App = () => {
   const [style, setStyle] = useState("温柔风");
