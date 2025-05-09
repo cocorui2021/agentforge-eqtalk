@@ -3,6 +3,10 @@ import EQTalkPage from "./components/EQTalkPage";
 import StyleSelector from "./components/StyleSelector";
 import ChatContextUploader from "./components/ChatContextUploader";
 import DemoDialog from "./components/DemoDialog";
+import ContextImageUploader from "./components/ContextImageUploader";
+
+// 添加到页面布局中
+<ContextImageUploader onTextExtracted={(text) => setChatInput(text)} />
 
 const App = () => {
   const [style, setStyle] = useState("温柔风");
