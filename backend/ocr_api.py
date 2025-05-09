@@ -1,7 +1,5 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException
-import pytesseract
-from PIL import Image
-import io
+from utils.ocr_helper import extract_text_from_image_bytes
 
 router = APIRouter()
 
@@ -9,8 +7,7 @@ router = APIRouter()
 async def extract_text_from_image(file: UploadFile = File(...)):
     try:
         content = await file.read()
-        image = Image.open(io.BytesIO(content))
-        extracted_text = pytesseract.image_to_string(image, lang='chi_sim+eng')
+        extracted_text = extract_text_from_image_bytes(content)
         return {"extracted_text": extracted_text}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"OCR 处理失败：{e}")
