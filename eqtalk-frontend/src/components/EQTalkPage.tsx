@@ -1,13 +1,8 @@
 import React, { useState } from "react";
-import StyleSelector from "./StyleSelector";
 import TagCloudWithRanking from "./TagCloudWithRanking";
 
-const EQTalkPage = () => {
-  const [scene, setScene] = useState("");
-  const [style, setStyle] = useState("全部");
+const EQTalkPage = ({ style, scene }) => {
   const [response, setResponse] = useState("");
-
-  const styles = ["温柔风", "幽默风", "直接风", "冷静风"];
 
   const handleGenerate = async () => {
     const res = await fetch("/api/gpt/generate", {
@@ -16,36 +11,24 @@ const EQTalkPage = () => {
       body: JSON.stringify({ prompt: scene })
     });
     const data = await res.json();
-    setResponse(data.response || "暂无合适回复，请尝试调整场景描述");
+    setResponse(data.response || "暂无合适回复，请尝试调整场景描述。");
   };
 
   return (
-    <div style={{ padding: "20px", maxWidth: "600px", margin: "auto" }}>
-      <h2>🎯 聊天场景</h2>
-      <textarea
-        placeholder="请输入聊天场景..."
-        value={scene}
-        onChange={(e) => setScene(e.target.value)}
-        style={{ width: "100%", height: "80px", marginBottom: "10px" }}
-      />
-      <StyleSelector styles={styles} selected={style} onSelect={setStyle} />
-      <button onClick={handleGenerate} style={{ marginTop: "10px" }}>
+    <div className="space-y-4">
+      <button
+        onClick={handleGenerate}
+        className="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600"
+      >
         🚀 生成高情商回复
       </button>
 
-      <h3 style={{ marginTop: "20px" }}>💬 推荐回复</h3>
-      <div
-        style={{
-          padding: "15px",
-          background: "#f0f0f0",
-          borderRadius: "8px",
-          minHeight: "50px"
-        }}
-      >
+      <h3 className="text-lg font-semibold text-gray-700">💬 推荐回复</h3>
+      <div className="p-4 bg-gray-100 rounded-lg min-h-[50px] text-gray-800">
         {response}
       </div>
 
-      <h3 style={{ marginTop: "30px" }}>📊 标签热度 & 投票排行</h3>
+      <h3 className="text-lg font-semibold text-gray-700">📊 标签热度 & 投票排行</h3>
       <TagCloudWithRanking />
     </div>
   );
