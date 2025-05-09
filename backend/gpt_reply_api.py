@@ -4,8 +4,7 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
-# GPT-4 API 配置
-openai.api_key = "your-api-key"
+openai.api_key = "your-openai-api-key"
 
 class RequestModel(BaseModel):
     scene: str
