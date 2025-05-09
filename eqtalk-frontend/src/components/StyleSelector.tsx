@@ -1,21 +1,16 @@
+
 import React from "react";
 
-const StyleSelector = ({ styles, selected, onSelect }) => {
+const styles = ["温柔风", "幽默风", "直接风", "冷静风"];
+
+const StyleSelector = ({ selectedStyle, onChange }) => {
   return (
-    <div style={{ marginTop: "10px" }}>
+    <div className="flex flex-wrap gap-2">
       {styles.map((s) => (
         <button
           key={s}
-          onClick={() => onSelect(s)}
-          style={{
-            margin: "5px",
-            padding: "8px 12px",
-            background: selected === s ? "#4CAF50" : "#e0e0e0",
-            color: selected === s ? "#fff" : "#333",
-            borderRadius: "20px",
-            border: "none",
-            cursor: "pointer"
-          }}
+          onClick={() => onChange(s)}
+          className={\`px-3 py-1 rounded-full border \${selectedStyle === s ? "bg-indigo-500 text-white" : "bg-gray-200 text-gray-700"}\`}
         >
           {s}
         </button>
